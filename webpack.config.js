@@ -3,6 +3,7 @@
 // path是nodejs中的一个基本包，用来处理路径的
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const HTMLPlugin = require('html-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -55,7 +56,8 @@ const config = {
     ]
   },
   plugins: [
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    new HTMLPlugin()
   ]
 }
 
