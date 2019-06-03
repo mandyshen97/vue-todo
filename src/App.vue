@@ -6,7 +6,7 @@
 export default {
   data() {
     return {
-      text: 'abcd'
+      text: '偶得快热加载'
     }
   }
 }
