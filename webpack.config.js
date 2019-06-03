@@ -4,7 +4,9 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
-module.exports = {
+const isDev = process.env.NODE_ENV === 'development';
+
+const config = {
   // 编译目标是web平台
   target: 'web',
   // 声明入口,entry使用绝对路径，保证不出错误
@@ -57,4 +59,18 @@ module.exports = {
   ]
 }
 
+if(isDev){
+  config.devserver = {
+    // 端口
+    port: 8080,
+    // 主机
+    hot: '0.0.0.0',
+    // 使webpack错误显示到页面上
+    overlay: {
+      error: true,
+    }
+  }
+}
+
+module.exports = config;
 
