@@ -4,6 +4,7 @@
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HTMLPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -56,22 +57,40 @@ const config = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: isDev ? '"development"' : '"production"'
+      }
+    }),
     new VueLoaderPlugin(),
     new HTMLPlugin()
   ]
 }
 
+// 如果是开发模式，则进行下列配置
 if(isDev){
-  config.devserver = {
+  // 控制是否生成，以及如何生成 source map
+  config.devtool = '#cheap-module-eval-source-map';
+  config.devServer = {
     // 端口
     port: 8080,
     // 主机
-    hot: '0.0.0.0',
+    host: '0.0.0.0',
     // 使webpack错误显示到页面上
     overlay: {
       error: true,
-    }
-  }
+    },
+    // 自动打开浏览器
+    // open: true,
+    // 模块热替换，只更新更改的部分
+    hot: true
+  };
+  // 添加插件
+  config.plugins.push(
+    // 热模块替换插件
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin()
+  );
 }
 
 module.exports = config;
