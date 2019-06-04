@@ -1,3 +1,5 @@
+// Footer.jsx
+
 import '../assets/styles/footer.styl';
 
 export default {
