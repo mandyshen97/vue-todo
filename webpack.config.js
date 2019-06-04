@@ -5,6 +5,7 @@ const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HTMLPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const ExtractPlugin = require('extract-text-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -13,11 +14,11 @@ const config = {
   target: 'web',
   // 声明入口,entry使用绝对路径，保证不出错误
   entry: path.join(__dirname, 'src/index.js'),
-  mode: 'production',
+  // mode: 'production',
   // 出口
   output: {
     // 输出打包文件名（将index.js以及其依赖的资源打包成bundle.js）
-    filename: 'bundle.js',
+    filename: 'bundle.[hash:8].js',
     // 输出路径
     path: path.join(__dirname, 'dist')
   },
@@ -42,7 +43,7 @@ const config = {
         test: /\.(gif|jpg|jpeg|png|svg)$/,
         use: [
           {
-            loader:  'url-loader',
+            loader: 'url-loader',
             options: {
               limit: 1024,
               name: '[name]-aaa.[ext]'
@@ -50,14 +51,7 @@ const config = {
           }
         ]
       },
-      {
-        test: /\.styl/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'stylus-loader'
-        ]
-      }
+
     ]
   },
   plugins: [
@@ -72,7 +66,21 @@ const config = {
 }
 
 // 如果是开发模式，则进行下列配置
-if(isDev){
+if (isDev) {
+  config.module.rules.push({
+    test: /\.styl/,
+    use: [
+      'style-loader',
+      'css-loader',
+      {
+        loader: 'postcss-loader',
+        options: {
+          sourceMap: true,
+        }
+      },
+      'stylus-loader'
+    ]
+  });
   // 控制是否生成，以及如何生成 source map
   config.devtool = '#cheap-module-eval-source-map';
   config.devServer = {
@@ -95,6 +103,52 @@ if(isDev){
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   );
+} else {
+  config.entry = {
+    app: path.join(__dirname, 'src/index.js'),
+    vendor: ['vue']
+  };
+  config.output.filename = '[name].[chunkhash:8].js';
+  config.module.rules.push(
+    {
+      test: /\.styl/,
+      use: ExtractPlugin.extract({
+        fallback: 'style-loader',
+        use: [
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true,
+            }
+          },
+          'stylus-loader'
+        ]
+      })
+    },
+  );
+  config.plugins.push(
+    new ExtractPlugin('styles.[hash:8].css')
+  );
+  config.optimization = {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          chunks: 'initial',
+          minChunks: 2, maxInitialRequests: 5,
+          minSize: 0
+        },
+        vendor: {
+          test: /node_modules/,
+          chunks: 'initial',
+          name: 'vendor',
+          priority: 10,
+          enforce: true
+        }
+      }
+    },
+    runtimeChunk: true
+  }
 }
 
 module.exports = config;
