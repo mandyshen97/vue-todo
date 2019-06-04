@@ -6,9 +6,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 
-import './assets/styles/test.css';
-import './assets/images/bg.jpg';
-import './assets/styles/test-stylus.styl';
+import '../src/assets/styles/global.styl';
 
 const root = document.createElement('div');
 document.body.appendChild(root);
@@ -16,4 +14,4 @@ document.body.appendChild(root);
 // 创建Vue对象，将App组件挂载到root节点
 new Vue({
   render: (h) => h(App)
-}).$mount(root)
+}).$mount(root);
