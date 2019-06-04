@@ -1,4 +1,16 @@
 # webpack+vue搭建todo应用
+## 使用方法：
+下载安装
+```$xslt
+git clone https://github.com/mandyshen97/vue-todo.git
+```
+运行
+```$xslt
+npm run dev
+```
+<hr/>
+<hr/>
+#                webpack+vue搭建todo应用
 
 - 目的：
   - 搭建前端工程化项目`webpack`+`vue`
