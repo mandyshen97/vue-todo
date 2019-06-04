@@ -10,7 +10,6 @@ npm run dev
 ```
 <hr/>
 <hr/>
-#                webpack+vue搭建todo应用
 
 - 目的：
   - 搭建前端工程化项目`webpack`+`vue`
